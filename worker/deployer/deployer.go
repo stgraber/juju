@@ -88,6 +88,7 @@ func (d *Deployer) SetUp() (watcher.StringsWatcher, error) {
 			return nil, err
 		}
 	}
+	logger.Debugf("SetUp completed successfully for Deployer with deployed: %v", d.deployed)
 	return machineUnitsWatcher, nil
 }
 
@@ -123,6 +124,13 @@ func (d *Deployer) changed(unitName string) error {
 				return err
 			}
 		}
+	}
+	logger.Debugf("d.deployed is: %v", d.deployed)
+	deployed, err := d.ctx.DeployedUnits()
+	if err != nil {
+		logger.Debugf("Checking DeployedUnits in changed() returned an error: %v", err)
+	} else {
+		logger.Debugf("Checking DeployedUnits in changed() returned deployed: %v", deployed)
 	}
 	// The only units that should be deployed are those that (1) we are responsible
 	// for and (2) are Alive -- if we're responsible for a Dying unit that is not

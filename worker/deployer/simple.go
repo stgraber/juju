@@ -221,21 +221,23 @@ var deployedRe = regexp.MustCompile("^(jujud-.*unit-([a-z0-9-]+)-([0-9]+))$")
 func (ctx *SimpleContext) deployedUnitsInitSystemJobs() (map[string]string, error) {
 	fis, err := ctx.listServices()
 	if err != nil {
+		logger.Debugf("deployedUnitsInitSystemJobs listServices returned ERROR: %v", err)
 		return nil, err
 	}
-	if err != nil {
-		return nil, err
-	}
+	logger.Debugf("deployedUnitsInitSystemJobs listServices returned: %v", fis)
 	installed := make(map[string]string)
 	for _, fi := range fis {
 		if groups := deployedRe.FindStringSubmatch(fi); len(groups) > 0 {
+			logger.Debugf("Service %v matched", groups)
 			unitName := groups[2] + "/" + groups[3]
 			if !names.IsValidUnit(unitName) {
+				logger.Debugf("Skipping unitName: %q", unitName)
 				continue
 			}
 			installed[unitName] = groups[1]
 		}
 	}
+	logger.Debugf("deployedUnitsInitSystemJobs returning: %v", installed)
 	return installed, nil
 }
 
@@ -248,6 +250,7 @@ func (ctx *SimpleContext) DeployedUnits() ([]string, error) {
 	for unitName := range unitsAndJobs {
 		installed = append(installed, unitName)
 	}
+	logger.Debugf("DeployedUnits returning: %v", installed)
 	return installed, nil
 }
 
