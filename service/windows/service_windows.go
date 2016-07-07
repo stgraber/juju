@@ -6,7 +6,6 @@ package windows
 
 import (
 	"reflect"
-	"runtime"
 	"syscall"
 	"unsafe"
 
@@ -155,7 +154,6 @@ var getPassword = func() (string, error) {
 // the current system. It is defined as a variable to allow us to mock it out
 // for testing
 var listServices = func() (services []string, err error) {
-	logger.Debugf("listServices - go version: %s", runtime.Version())
 	host := syscall.StringToUTF16Ptr(".")
 
 	sc, err := windows.OpenSCManager(host, nil, windows.SC_MANAGER_ALL_ACCESS)
@@ -166,7 +164,6 @@ var listServices = func() (services []string, err error) {
 		}
 	}()
 	if err != nil {
-		logger.Debugf("windows.OpenSCManager returned: %v", err)
 		return nil, err
 	}
 
@@ -190,12 +187,10 @@ var listServices = func() (services []string, err error) {
 		break
 	}
 
-	logger.Debugf("listServices enum: %+v", enum)
 	services = make([]string, len(enum))
 	for i, v := range enum {
 		services[i] = v.Name()
 	}
-	logger.Debugf("listServices returning services: %v", services)
 	return services, nil
 }
 

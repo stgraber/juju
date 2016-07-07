@@ -86,6 +86,18 @@ func (ctx *SimpleContext) AgentConfig() agent.Config {
 	return ctx.agentConfig
 }
 
+func (ctx *SimpleContext) IsUnitInstalled(unitName string) (bool, error) {
+	renderer, err := shell.NewRenderer("")
+	if err != nil {
+		return false, errors.Trace(err)
+	}
+	svc, err := ctx.service(unitName, renderer)
+	if err != nil {
+		return false, errors.Trace(err)
+	}
+	return svc.Installed()
+}
+
 func (ctx *SimpleContext) DeployUnit(unitName, initialPassword string) (err error) {
 	// Check sanity.
 	renderer, err := shell.NewRenderer("")
