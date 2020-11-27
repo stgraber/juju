@@ -140,7 +140,6 @@ func (s *Server) ensureDefaultNetworking(profile *api.Profile, eTag string) erro
 		req := api.NetworksPost{
 			Name:    network.DefaultLXDBridge,
 			Type:    netTypeBridge,
-			Managed: true,
 			NetworkPut: api.NetworkPut{Config: map[string]string{
 				"ipv4.address": "auto",
 				"ipv4.nat":     "true",
